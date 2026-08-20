@@ -11,6 +11,10 @@
   <title>VICON Studios — Jump In Our World</title>
   <link rel="icon" href="public/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="styles.css" />
+
+
+
+
 </head>
 <body>
   <div class="noise" aria-hidden="true"></div>
@@ -250,7 +254,12 @@
           <p class="reveal">Let's create something iconic together.</p>
           <a class="contact-email magnetic" href="mailto:viconstudios@gmail.com">viconstudios@gmail.com <span>↗</span></a>
         </div>
-        <form class="contact-form" id="contactForm">
+        <form class="contact-form" id="contactForm" action="https://formsubmit.co/viconstudios@gmail.com" method="POST">
+          <input type="hidden" name="_subject" value="New VICON project inquiry">
+          <input type="hidden" name="_template" value="table">
+          <input type="hidden" name="_next" value="https://viconstudios.onrender.com/#contact">
+          <input type="hidden" name="_captcha" value="false">
+
           <label><span>Name</span><input type="text" name="name" placeholder="Your name" required /></label>
           <label><span>Email</span><input type="email" name="email" placeholder="you@company.com" required /></label>
           <label><span>Company</span><input type="text" name="company" placeholder="Company / brand" /></label>
@@ -296,7 +305,7 @@
   <script src="script.js"></script>
 
 <script>
-// Handle contact form submission
+// Handle contact form submission with FormSubmit.co
 document.addEventListener('DOMContentLoaded', function() {
   const form = document.getElementById('contactForm');
   const statusEl = document.getElementById('formStatus');
@@ -305,36 +314,27 @@ document.addEventListener('DOMContentLoaded', function() {
     form.addEventListener('submit', async function(e) {
       e.preventDefault();
       
-      // Get form data
-      const formData = new FormData(form);
-      const data = {
-        name: formData.get('name'),
-        email: formData.get('email'),
-        company: formData.get('company') || '',
-        message: formData.get('message')
-      };
-      
       // Show loading state
       statusEl.textContent = 'Sending...';
       statusEl.style.color = '#666';
       
       try {
-        const response = await fetch('/api/contact', {
+        // Submit form to FormSubmit.co
+        const formData = new FormData(form);
+        const response = await fetch(form.action, {
           method: 'POST',
+          body: formData,
           headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(data)
+            'Accept': 'application/json'
+          }
         });
         
-        const result = await response.json();
-        
-        if (response.ok && result.success) {
-          statusEl.textContent = result.message;
+        if (response.ok) {
+          statusEl.textContent = 'Thank you! We\'ll be in touch soon.';
           statusEl.style.color = '#13D8C4';
           form.reset();
         } else {
-          statusEl.textContent = result.error || 'Failed to send message';
+          statusEl.textContent = 'Failed to send message. Please try again.';
           statusEl.style.color = '#F7A3C5';
         }
       } catch (error) {
